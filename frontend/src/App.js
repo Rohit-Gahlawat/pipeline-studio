@@ -1,7 +1,11 @@
+import { PipelineToolbar } from './toolbar';
+import { PipelineUI } from './ui';
+
 function App() {
   return (
     <div>
-      <h1>Pipeline Builder</h1>
+      <PipelineToolbar />
+      <PipelineUI />
     </div>
   );
 }
