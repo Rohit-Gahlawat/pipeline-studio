@@ -2,11 +2,17 @@ import { useState, useRef, useCallback } from 'react';
 import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
 import { useStore } from './store';
 import { shallow } from 'zustand/shallow';
+import { InputNode } from './nodes/inputNode';
+import { OutputNode } from './nodes/outputNode';
 
 import 'reactflow/dist/style.css';
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
+const nodeTypes = {
+  customInput: InputNode,
+  customOutput: OutputNode,
+};
 
 const selector = (state) => ({
   nodes: state.nodes,
@@ -17,6 +23,10 @@ const selector = (state) => ({
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
 });
+
+const getInitNodeData = (nodeID, type) => {
+  return { id: nodeID, nodeType: `${type}` };
+};
 
 export const PipelineUI = () => {
     const reactFlowWrapper = useRef(null);
@@ -54,7 +64,7 @@ export const PipelineUI = () => {
               id: nodeID,
               type,
               position,
-              data: { label: nodeID },
+              data: getInitNodeData(nodeID, type),
             };
 
             addNode(newNode);
@@ -79,6 +89,7 @@ export const PipelineUI = () => {
                 onDrop={onDrop}
                 onDragOver={onDragOver}
                 onInit={setReactFlowInstance}
+                nodeTypes={nodeTypes}
                 proOptions={proOptions}
                 snapGrid={[gridSize, gridSize]}
             >
