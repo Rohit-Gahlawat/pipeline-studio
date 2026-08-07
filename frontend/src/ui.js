@@ -1,40 +1,35 @@
 import { useState, useRef, useCallback } from 'react';
-import ReactFlow, {
-  Controls,
-  Background,
-  MiniMap,
-  applyNodeChanges,
-  applyEdgeChanges,
-  addEdge,
-} from 'reactflow';
+import ReactFlow, { Controls, Background, MiniMap } from 'reactflow';
+import { useStore } from './store';
+import { shallow } from 'zustand/shallow';
 
 import 'reactflow/dist/style.css';
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
 
-let nodeCount = 0;
+const selector = (state) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  getNodeID: state.getNodeID,
+  addNode: state.addNode,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  onConnect: state.onConnect,
+});
 
 export const PipelineUI = () => {
     const reactFlowWrapper = useRef(null);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const [nodes, setNodes] = useState([]);
-    const [edges, setEdges] = useState([]);
-
-    const onNodesChange = useCallback(
-        (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-        []
-    );
-
-    const onEdgesChange = useCallback(
-        (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-        []
-    );
-
-    const onConnect = useCallback(
-        (connection) => setEdges((eds) => addEdge(connection, eds)),
-        []
-    );
+    const {
+      nodes,
+      edges,
+      getNodeID,
+      addNode,
+      onNodesChange,
+      onEdgesChange,
+      onConnect
+    } = useStore(selector, shallow);
 
     const onDrop = useCallback(
         (event) => {
@@ -54,18 +49,18 @@ export const PipelineUI = () => {
               y: event.clientY - reactFlowBounds.top,
             });
 
-            nodeCount += 1;
+            const nodeID = getNodeID(type);
             const newNode = {
-              id: `node-${nodeCount}`,
+              id: nodeID,
               type,
               position,
-              data: { label: `Node ${nodeCount}` },
+              data: { label: nodeID },
             };
 
-            setNodes((nds) => [...nds, newNode]);
+            addNode(newNode);
           }
         },
-        [reactFlowInstance]
+        [reactFlowInstance, getNodeID, addNode]
     );
 
     const onDragOver = useCallback((event) => {
