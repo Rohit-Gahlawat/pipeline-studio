@@ -5,6 +5,7 @@ import { shallow } from 'zustand/shallow';
 import { InputNode } from './nodes/inputNode';
 import { LLMNode } from './nodes/llmNode';
 import { OutputNode } from './nodes/outputNode';
+import { TextNode } from './nodes/textNode';
 
 import 'reactflow/dist/style.css';
 
@@ -14,6 +15,7 @@ const nodeTypes = {
   customInput: InputNode,
   llm: LLMNode,
   customOutput: OutputNode,
+  text: TextNode,
 };
 
 const selector = (state) => ({
