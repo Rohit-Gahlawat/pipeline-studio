@@ -3,6 +3,7 @@ import {
     addEdge,
     applyNodeChanges,
     applyEdgeChanges,
+    MarkerType,
   } from 'reactflow';
 
 export const useStore = create((set, get) => ({
@@ -34,7 +35,7 @@ export const useStore = create((set, get) => ({
     },
     onConnect: (connection) => {
       set({
-        edges: addEdge(connection, get().edges),
+        edges: addEdge({...connection, markerEnd: {type: MarkerType.ArrowClosed, height: 16, width: 16, color: '#5e5e5e'}}, get().edges),
       });
     },
   }));

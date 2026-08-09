@@ -9,7 +9,7 @@ import { TextNode } from './nodes/textNode';
 
 import 'reactflow/dist/style.css';
 
-const gridSize = 20;
+const gridSize = 16;
 const proOptions = { hideAttribution: true };
 const nodeTypes = {
   customInput: InputNode,
@@ -83,7 +83,7 @@ export const PipelineUI = () => {
     }, []);
 
     return (
-        <div ref={reactFlowWrapper} style={{width: '100wv', height: '70vh'}}>
+        <div ref={reactFlowWrapper} className="w-full h-full">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -95,12 +95,18 @@ export const PipelineUI = () => {
                 onInit={setReactFlowInstance}
                 nodeTypes={nodeTypes}
                 proOptions={proOptions}
+                snapToGrid
                 snapGrid={[gridSize, gridSize]}
             >
-                <Background color="#aaa" gap={gridSize} />
+                <Background color="#444444" gap={gridSize} size={1} />
                 <Controls />
                 <MiniMap />
             </ReactFlow>
+            {nodes.length === 0 && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm text-neutral-500 pointer-events-none z-[4]">
+                    Drag a node from the toolbar to get started
+                </div>
+            )}
         </div>
     )
 }
